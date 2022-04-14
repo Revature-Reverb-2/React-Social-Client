@@ -20,9 +20,10 @@ export default function SearchBar() {
       const getSearch = async () => {
         const resp = await reverbClientWithAuth.get(`/api/search?query=${input}`);
         console.log(resp);
-        if (resp.status.toString()[0] === "2" && resp.data.responses.length) {
+        if (resp.status.toString()[0] === "2" && resp.data.responses.length)
           setResults(resp.data.responses);
-        }
+        else
+          setResults([]);
       }
 
       getSearch();
