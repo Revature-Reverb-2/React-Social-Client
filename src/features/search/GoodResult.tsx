@@ -20,7 +20,7 @@ export default function GoodResult({ results }: any) {
       }
 
       console.log(usersArr);
-      setUsers(usersArr);
+      setUsers(usersArr.slice(0,9));
     };
 
     createUsers();

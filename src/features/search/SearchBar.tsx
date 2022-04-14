@@ -22,7 +22,7 @@ export default function SearchBar() {
         console.log(resp);
         if (resp.status.toString()[0] === "2" && resp.data.responses.length) {
           setResults(resp.data.responses);
-        }
+        } else setResults([]);
       }
 
       getSearch();
