@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { reverbClientWithAuth } from "../../remote/reverb-api/reverbClient";
-import ResultsList from './ResultsList';
-import SearchResult from './SearchResult';
+import SearchResult from '../search/SearchResult';
+import ResultsListGroup from './ResultsListGroup';
 
-export default function SearchBar() {
+export default function SearchBarGroup() {
   const [input, setInput] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
-  const type:string = "people";
 
   // Queries the DB only when the first character is typed into search bar. The results are then stored in initialResults (for further filtering) until the search bar is cleared (by backspacing, for instance)
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -16,30 +15,31 @@ export default function SearchBar() {
   useEffect(() => {
     if (input !== "") {
       console.log(input);
+      
+      reverbClientWithAuth.get(`/api/search/group?query=${input}`)
+        .then(resp => {
+          console.log(resp.data.responses);
+      
+          if (resp.status.toString()[0] != "2") {
+            console.log(resp.data);
+          }
 
-      const getSearch = async () => {
-        const resp = await reverbClientWithAuth.get(`/api/search?query=${input}`);
-        console.log(resp);
-        if (resp.status.toString()[0] === "2" && resp.data.responses.length) {
           setResults(resp.data.responses);
-        }
-      }
-
-      getSearch();
+        })
+        .catch(err => console.log(err));
     }
-  }, [input]);
+  }, [input])
 
   return (
     <div id='search-container'>
-      {console.log(results)}
       <input
-        placeholder="Search for People"
+        placeholder="Search for Groups"
         aria-label="search-input"
         aria-describedby="basic-addon1"
         value={input}
         onChange={handleChange}
       />
-      {input && <ResultsList results={results} type={type} />}
+      {input && <ResultsListGroup results={results}/>}
     </div>
   );
 }
